@@ -1,0 +1,10 @@
+{
+    "_id" : ObjectId("642185ddd7fca924b0b11a0b"),
+    "name" : "AR-GE",
+    "employees" : [
+        ObjectId("62cbef941015e2645987bfe1"),
+        ObjectId("62cbef941015e2645987bfe1")
+    ],
+  "status": true,
+    ."created_at" : ISODate("2013-10-01T00:00:00.000Z")
+}
