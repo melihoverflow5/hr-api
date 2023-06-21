@@ -25,6 +25,33 @@ class MongoDbHelper:
             result = self.get_single({"_id": ObjectId(_id), })
             return result
 
-        # def set_database(self):
-        #     self.db = mongo[g.database]
+        def get_all(self, predicate: object = None, fields: object = None, sort: str = None, limit: int = None,
+                    skip: int = None) -> object:
+            result = self.get_collection().find(predicate, fields)
 
+            if sort is not None:
+                # print("sort")
+                result = result.sort(sort, -1)
+
+            if limit is not None:
+                # print("limit")
+                result = result.limit(limit)
+
+            if skip is not None:
+                # print("skip")
+                result = result.skip(skip)
+
+            return result
+
+        def edit(self, predicate: dict, value: dict, is_upsert: bool = False) -> dict:
+            """ UpdateOne({'_id': 4}, {'$inc': {'j': 1}}, upsert=True) """
+            result = self.get_collection().update_one(predicate, {'$set': value}, upsert=is_upsert)
+            return dict(
+                matched_count=result.matched_count,
+                modified_count=result.modified_count,
+                upserted_id=result.upserted_id
+            )
+
+        def remove(self, predicate: dict):
+            result = self.get_collection().delete_one(predicate)
+            return result.deleted_count

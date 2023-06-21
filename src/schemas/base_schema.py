@@ -18,6 +18,11 @@ class BaseSchema(Schema):
         # kwargs["strict"] = True
         super().__init__(*args, **kwargs)
 
+    def get_args(self):
+        payload = request.args
+        schema = self.deserialize(payload)
+        return schema
+
     def get_json(self):
         payload = request.json
         schema = self.deserialize(payload)

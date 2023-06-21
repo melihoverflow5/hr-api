@@ -4,7 +4,7 @@ from src.resources.base_resource import BaseResource
 from src.services.auth_service import AuthService
 from src.schemas.auth_schema import AuthLoginSchema
 
-from src.commons.response import created_result, no_content_result
+from src.commons.response import created_result, no_content_result, ok_result
 from flask_jwt_extended import jwt_required
 
 
@@ -28,3 +28,15 @@ class AuthLoginResource(BaseResource):
     def delete(self):
         self.__auth_service.logout()
         return no_content_result()
+
+
+class AuthLoginUserResource(BaseResource):
+    @inject
+    def __init__(self, __auth_service: AuthService):
+        super().__init__()
+        self.__auth_service = __auth_service
+
+    @jwt_required()
+    def get(self):
+        result = self.__auth_service.get_login_user()
+        return ok_result(result)

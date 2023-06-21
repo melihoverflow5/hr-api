@@ -12,12 +12,13 @@ def create_app():
 
     jwt = JWTManager(app)
     jwt_handlers_config(jwt)
-    exe
+
     api = Api(app)
     routes_config(api)
     injects_config(app)
     exception_handlers_config(app)
     response_handlers_config(app)
+    exception_handlers_config(app)
     json_schema_handlers_config(app)
 
     @app.before_request

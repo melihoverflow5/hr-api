@@ -4,12 +4,15 @@ from bson import ObjectId
 from flask_injector import inject
 from src.services.base_service import BaseService
 
+
 from src.repositories.user_repository import UserRepository
 from src.repositories.organization_repository import OrganizationRepository
 from src.repositories.role_repository import RoleRepository
 from src.repositories.unit_repository import UnitRepository
 
 from src.commons.exceptions import NotFoundError, BusinessRuleError
+from src.utils.datetime_util import now_timestamp
+from src.utils.hash_util import check_bcrypt
 
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity
 from flask import current_app as app
@@ -29,7 +32,10 @@ class AuthService(BaseService):
         unit = self.__get_unit(user['unit_id'])
         role = self.__get_user_role(user['role_id'])
 
-        now_time = int(time.time())
+        if role["title"] is "superadmin":
+            return create_access_token(identity= str(user["_id"]))
+
+        now_time = now_timestamp()
         exp_time = int(organization["support_end_date"].timestamp())
         if now_time > exp_time:
             raise BusinessRuleError(code="organization.demo.end", message="Organization Expired")
@@ -43,8 +49,8 @@ class AuthService(BaseService):
         if not result:
             raise NotFoundError(code="user.not_found", message="User not found")
 
-        # if not check_bcrypt(password=schema["password"], password_hash=result['password']):
-        #     raise NotFoundError(code="user.not_found", message="User not found")
+        if not check_bcrypt(password=schema['password'], password_hash=result['password']):
+            raise NotFoundError(code="user.not_found", message="User not found")
 
         if not result['status']:
             raise BusinessRuleError("module.user.status", "User status is not active")
@@ -152,3 +158,10 @@ class AuthService(BaseService):
     @staticmethod
     def logout():
         return True
+
+# TODO : implement get login user after user service implementation
+    def get_login_user(self):
+        current_user = get_jwt_identity()
+        user = self.__user_repository.get_single(predicate={"_id": ObjectId(current_user)})
+        # return UserService().user_dict(user)
+        pass

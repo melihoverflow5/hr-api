@@ -25,14 +25,14 @@ def jwt_handlers_config(jwt):
     #redis_instance = redis.StrictRedis.from_url(environ.get('REDIS_URL'))
 
     # Callback function to check if a JWT exists in the redis blocklist
-    @jwt.token_in_blocklist_loader
-    def check_if_token_is_revoked(jwt_header, jwt_payload):
-        return False
-        jti = jwt_payload["jti"]
-        token_in_redis = redis_instance.get('token:'+str(jti))
-        if token_in_redis:
-            return False
-        return True
+    # @jwt.token_in_blocklist_loader
+    # def check_if_token_is_revoked(jwt_header, jwt_payload):
+    #     return False
+    #     jti = jwt_payload["jti"]
+    #     token_in_redis = redis_instance.get('token:'+str(jti))
+    #     if token_in_redis:
+    #         return False
+    #     return True
 
     @jwt.invalid_token_loader
     def my_invalid_token_loader(e):
