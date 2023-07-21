@@ -1,4 +1,4 @@
 from src.app import app
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=8000, debug=True)
+    app.run(debug=True, port=5000, host='0.0.0.0')

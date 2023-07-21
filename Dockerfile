@@ -1,27 +1,15 @@
-# Base image
-FROM python:3.9-slim
+# syntax=docker/dockerfile:1.4
+FROM python:3.9.16-buster
 
-# Set the working directory
+RUN mkdir -p /app
 WORKDIR /app
 
-# Install build dependencies
-RUN apt-get update && apt-get install -y build-essential
-
-# Copy the requirements file
-COPY requirements.txt .
-
-# Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the application code
-COPY . .
-
-# Expose the port the Flask app will run on
+COPY requirements.txt /app
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip3 install -r requirements.txt
+# RUN pip install --index-url https://pypi.python.org/simple --upgrade pip
+# RUN pip install --index-url https://pypi.python.org/simple -r requirements.txt
+COPY . /app
 EXPOSE 5000
-
-# Set environment variables (if needed)
-ENV FLASK_APP=run.py
-ENV FLASK_RUN_HOST=0.0.0.0
-
-# Run the Flask application
-CMD ["flask", "run"]
+EXPOSE 8000
+CMD ["gunicorn", "-c", "/app/gunicorn.py", "run:app"]
