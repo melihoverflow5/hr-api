@@ -23,6 +23,11 @@ class BaseSchema(Schema):
         schema = self.deserialize(payload)
         return schema
 
+    def get_args_serialize(self):
+        payload = request.args
+        schema = self.serialize(payload)
+        return schema
+
     def get_json(self):
         payload = request.json
         schema = self.deserialize(payload)

@@ -16,3 +16,11 @@ class AuthLoginSchema(BaseSchema):
         allow_none=False,
         error_messages=default_error_messages
     )
+
+class SSOSchema(BaseSchema):
+    password = fields.Str(
+        required=True,
+        validate=[validate.Length(min=6, max=100)],
+        allow_none=False,
+        error_messages=default_error_messages
+        )

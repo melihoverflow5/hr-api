@@ -1,3 +1,4 @@
+import pymongo
 from pymongo import MongoClient
 from flask import g
 from bson import ObjectId
@@ -15,7 +16,11 @@ class MongoDbHelper:
 
         def add(self, entity: object) -> object:
             result = self.get_collection().insert_one(entity)
-            return result.inserted_id
+            result = {
+                "inserted_id": str(result.inserted_id),
+                "acknowledged": result.acknowledged
+            }
+            return result
 
         def get_single(self, predicate: object) -> object:
             result = self.get_collection().find_one(predicate)
@@ -31,7 +36,7 @@ class MongoDbHelper:
 
             if sort is not None:
                 # print("sort")
-                result = result.sort(sort, -1)
+                result = result.sort(sort, pymongo.ASCENDING)
 
             if limit is not None:
                 # print("limit")

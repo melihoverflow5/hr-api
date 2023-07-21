@@ -1,1 +1,3 @@
 # hr-api
+# organization-id: a122jbb7-687c-1252-6b6k-dcab9c4ajja7
+# apikey: ATCTT3xFfGN0PemiPea11tTuq9IpBiW7xpdSBxbU3dKjBUjJzpOr6hzDbri-8HJjMnsxQ6dQ0UwCtXSmBCcD0qKjWM2p9YP2CsDtqHZvq7spE_A8ujXz3bPqxNcYzAjbQyKWKeQHL2Ga6HvyLSwD0xbT-XIdkl_QX9fEb0tkOPTUM_o3bIroWj8=ABE8AF51

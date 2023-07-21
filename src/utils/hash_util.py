@@ -1,7 +1,10 @@
 import hashlib
+import secrets
+import string
 
 from flask_bcrypt import check_password_hash
 from flask_bcrypt import generate_password_hash
+
 
 
 def hash_sha256(password: str):
@@ -23,3 +26,8 @@ def check_bcrypt(password_hash: str, password: str):
 def hash_md5(password: str):
     hash_object = hashlib.md5(str(password).encode())
     return hash_object.hexdigest()
+
+def generate_password():
+    alphabet = string.ascii_letters + string.digits
+    password = ''.join(secrets.choice(alphabet) for i in range(6))
+    return password

@@ -1,6 +1,6 @@
 from src.resources.base_resource import BaseResource
 from src.services.organization_service import OrganizationService
-from src.schemas.organization_schema import OrganizationCollectionSearchSchema
+from src.schemas.organization_schema import OrganizationCollectionSearchSchema , OrganizationCollectionSchema
 from src.commons.response import ok_result, created_result
 from flask_jwt_extended import jwt_required
 from src.commons.auth import authorize
@@ -13,14 +13,13 @@ class OrganizationCollectionResource(BaseResource):
     @jwt_required()
     @authorize(roles=["show_organization"])
     def get(self):
-        predicate = OrganizationCollectionSearchSchema().get_args()
-        result = self.__organization_service.get_all(predicate=predicate)
+        result = self.__organization_service.get_all()
         return ok_result(data=result)
 
     @jwt_required()
     @authorize(roles=["create_organization"])
     def post(self):
-        schema = OrganizationCollectionSearchSchema().get_json()
+        schema = OrganizationCollectionSchema().get_json()
         result = self.__organization_service.add(schema=schema)
         return created_result(data=result)
 

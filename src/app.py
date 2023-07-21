@@ -21,6 +21,7 @@ def create_app():
     exception_handlers_config(app)
     json_schema_handlers_config(app)
 
+
     @app.before_request
     def db_provider():
         db = request.headers['Host'].split('.')[0]
@@ -30,8 +31,11 @@ def create_app():
         if db == 'admin':
             db = 'hr-api'
         g.database = db
-        print(g.database)
+        # print(g.database)
+
     return app
 
 
 app = create_app()
+
+

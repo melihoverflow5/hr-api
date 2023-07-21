@@ -2,8 +2,9 @@ import time
 import datetime
 from bson import ObjectId
 from flask_injector import inject
-from src.services.base_service import BaseService
 
+from src.services.base_service import BaseService
+from src.services.user_service import UserService
 
 from src.repositories.user_repository import UserRepository
 from src.repositories.organization_repository import OrganizationRepository
@@ -11,8 +12,9 @@ from src.repositories.role_repository import RoleRepository
 from src.repositories.unit_repository import UnitRepository
 
 from src.commons.exceptions import NotFoundError, BusinessRuleError
+
 from src.utils.datetime_util import now_timestamp
-from src.utils.hash_util import check_bcrypt
+from src.utils.hash_util import check_bcrypt, hash_bcrypt
 
 from flask_jwt_extended import create_access_token, create_refresh_token, get_jwt_identity
 from flask import current_app as app
@@ -32,8 +34,11 @@ class AuthService(BaseService):
         unit = self.__get_unit(user['unit_id'])
         role = self.__get_user_role(user['role_id'])
 
-        if role["title"] is "superadmin":
-            return create_access_token(identity= str(user["_id"]))
+        if role["title"] == "superadmin":
+            return {"access_token" : create_access_token(identity= str(user["_id"]),
+                                       additional_claims={"role_id": str(role["_id"]),
+                                                "role_title": role["title"],
+                                                "roles": role['roles']})}
 
         now_time = now_timestamp()
         exp_time = int(organization["support_end_date"].timestamp())
@@ -145,6 +150,8 @@ class AuthService(BaseService):
                                                     "roles": role['roles'],
 
                                                     "manager_user_id": str(user["manager_user_id"]),
+                                                    "jira_id": str(user["jira_id"]),
+                                                    "first_login": str(user["first_login"]),
                                                 },
                                                 expires_delta=expires_delta)
         refresh_token = create_refresh_token(identity=str(user['_id']),
@@ -159,9 +166,35 @@ class AuthService(BaseService):
     def logout():
         return True
 
-# TODO : implement get login user after user service implementation
     def get_login_user(self):
         current_user = get_jwt_identity()
         user = self.__user_repository.get_single(predicate={"_id": ObjectId(current_user)})
-        # return UserService().user_dict(user)
-        pass
+        return UserService().user_dict(user)
+
+    def __first_login(self, _id):
+        result = self.__user_repository.edit({"_id": ObjectId(_id)}, {"first_login": False})
+        if result["matched_count"] == 0:
+            raise NotFoundError(code="not_found", message="")
+        elif result["modified_count"] == 0:
+            raise BusinessRuleError(code="there_is_no_change", message="")
+        return result["upserted_id"]
+
+    def sso(self, schema):
+        _id = get_jwt_identity()
+        user = self.__user_repository.get_single_by_id(_id)
+        if user['first_login'] is False:
+            raise BusinessRuleError(code="user.first_login", message="User first login is false")
+
+        result = self.__user_repository.change_first_password(password=hash_bcrypt(schema['password']), _id=_id)
+        if result["matched_count"] == 0:
+            raise NotFoundError(code="not_found", message="")
+        elif result["modified_count"] == 0:
+            raise BusinessRuleError(code="there_is_no_change", message="")
+
+        organization = self.__get_organization(user['organization_id'])
+        unit = self.__get_unit(user['unit_id'])
+        role = self.__get_user_role(user['role_id'])
+
+        result = self.__create_token(user=user, organization=organization, unit=unit, role=role)
+        return result
+
