@@ -1,5 +1,6 @@
 from flask import Flask, request, g
 from flask_restful import Api
+from flask_cors import CORS
 from src.routes import routes_config
 from src.injects import injects_config
 from src.commons.handlers import jwt_handlers_config, response_handlers_config, exception_handlers_config, json_schema_handlers_config
@@ -9,6 +10,7 @@ from flask_jwt_extended import JWTManager
 def create_app():
     app = Flask(__name__)
     app.config.from_object('config.Config')
+    CORS(app)
 
     jwt = JWTManager(app)
     jwt_handlers_config(jwt)
