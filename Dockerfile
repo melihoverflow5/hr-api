@@ -5,7 +5,7 @@ RUN mkdir -p /app
 WORKDIR /app
 
 COPY requirements.txt /app
-RUN --mount=type=cache,target=/root/.cache/pip \
+RUN target=/root/.cache/pip \
     pip3 install -r requirements.txt
 # RUN pip install --index-url https://pypi.python.org/simple --upgrade pip
 # RUN pip install --index-url https://pypi.python.org/simple -r requirements.txt
