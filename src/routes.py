@@ -21,3 +21,5 @@ def routes_config(api):
     api.add_resource(JiraCollectionResource, '/jira')
     api.add_resource(JiraItemCollectionResource, '/jira/<string:jira_id>')
     api.add_resource(JiraUserCollectionResource, '/jira/users')
+
+    api.add_resource(SystemPingResource, "/system/ping")
