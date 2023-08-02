@@ -2,8 +2,9 @@ import pymongo
 from pymongo import MongoClient
 from flask import g
 from bson import ObjectId
+from config import Config
 
-mongo = MongoClient("mongodb://localhost:27017/")
+mongo = MongoClient(Config.MONGO_URI)
 
 class MongoDbHelper:
         def __init__(self, db_name: str, collection_name: str):

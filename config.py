@@ -1,8 +1,8 @@
 
 class Config(object):
     DEBUG = True
-    SECRET_KEY = 'secret'
-    MONGO_URI = 'mongodb://localhost:27017/'
+    SECRET_KEY = 'asfasfasfafasfasfsdgrehjretndbds'
+    MONGO_URI = 'mongodb+srv://doadmin:28P9cL17t5d04bBv@mongodb-111-7e936d56.mongo.ondigitalocean.com'
     API_EXPIRE_TOKEN = 1
     JIRA_URI = 'https://hrapi.atlassian.net'
     JIRA_USERNAME = 'melihtaskin@protonmail.com'

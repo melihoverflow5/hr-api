@@ -26,10 +26,8 @@ def create_app():
     def db_provider():
         db = request.headers['Host'].split('.')[0]
         # test connection
-        if db == '127':
-            db = 'test'
-        if db == 'admin':
-            db = 'hr-api'
+        if db == "127" or db == "localhost":
+            db = "test"
         g.database = db
         # print(g.database)
 
