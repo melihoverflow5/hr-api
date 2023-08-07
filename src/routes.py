@@ -3,6 +3,7 @@ from src.resources.organization_resource import OrganizationCollectionResource, 
 from src.resources.user_resource import UserCollectionResource, UserCollectionItemResource
 from src.resources.title_resource import TitleCollectionResource, TitleCollectionItemResource
 from src.resources.jira_resource import JiraCollectionResource, JiraItemCollectionResource, JiraUserCollectionResource
+from src.resources.system_resource import SystemPingResource
 
 def routes_config(api):
     api.add_resource(AuthLoginResource, '/auth/login')
